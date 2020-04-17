@@ -1,24 +1,19 @@
 import { serve } from "https://deno.land/std/http/server.ts";
 import { Context } from "./context.ts";
+import { Router } from "./router/router.ts";
 
 type ServerConfig = {
   port: number;
 };
-type Route = {
-  method: string;
-  path: string;
-  handler: Handler;
-};
 
-type Handler = (ctx: any) => unknown;
 
 export class Application {
   private port: number = 3000;
   private server: any;
-  private routes: Route[] = [];
-
+  private router: any;
   constructor(serverConfig: ServerConfig) {
     this.port = serverConfig.port;
+    this.router = new Router();
   }
 
   start(port: number = this.port) {
@@ -26,23 +21,20 @@ export class Application {
     this.listen();
   }
 
-  get(path: string, handler: Handler) {
-    this.add("GET", path, handler);
-    return this;
-  }
-  post(path: string, handler: Handler) {
-    this.add("POST", path, handler);
+  get(...params: any) {
+    this.router.get(...params);
     return this;
   }
 
-  private add(method: string, path: string, handler: Handler) {
-    this.routes = [...this.routes, { method, path, handler }];
+  post(...params: any) {
+    this.router.post(...params);
+    return this;
   }
 
   private async listen() {
     for await (const request of this.server) {
-      const route = this.routes.find(
-        (route) => route.path == request.url && route.method == request.method
+      const route = this.router.routes.find(
+        (route : any) => route.path == request.url && route.method == request.method
       );
       if (route != undefined) {
         route.handler(new Context(request));

@@ -1,7 +1,7 @@
 const { readAll } = Deno;
 import { ServerRequest } from "https://deno.land/std@v0.39.0/http/server.ts";
 
-interface ContexInterface {
+export interface ContexInterface {
   hostname: object;
   method: string;
   url: string;
@@ -24,9 +24,9 @@ export class Context implements ContexInterface {
     this.method = request.method;
     this.url = request.url;
     this.#_request = request;
-    this.body = this.getBody();
+    this.body = request.body;
   }
-  private async getBody() {
+  async getBody() {
     return decoder.decode(await readAll(this.#_request.body));
   }
   get request() {
@@ -40,8 +40,5 @@ export class Context implements ContexInterface {
       return this.#_request.respond({ body });
     }
     return this.#_request.respond({ body: JSON.stringify(body) });
-  }
-  valueOf() {
-    return "ContextType";
   }
 }
