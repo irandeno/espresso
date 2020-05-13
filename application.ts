@@ -11,8 +11,8 @@ export class Application {
   private port: number = 3000;
   private server: any;
   private router: any;
-  constructor(serverConfig: ServerConfig) {
-    this.port = serverConfig.port;
+  constructor(serverConfig?: ServerConfig) {
+    this.port = serverConfig?.port || 80;
     this.router = new Router();
   }
 
