@@ -7,7 +7,7 @@ deno minimal web freamework
 import { Application } from "https://deno.land/x/espresso/mod.ts";
 const app = new Application({ port : 80});
 
-app.get("/", context => {
+app.get("/", (context: any) => {
   context.send("Hello From Deno !");
 });
 
