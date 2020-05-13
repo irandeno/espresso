@@ -11,7 +11,7 @@ app.get("/", (context: any) => {
   context.send("Hello From Deno !");
 });
 
-app.start()
+app.start();
 ```
 
 
