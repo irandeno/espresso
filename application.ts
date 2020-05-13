@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std/http/server.ts";
+import { serve } from "https://deno.land/std@v0.50.0/http/server.ts";
 import { Context } from "./context.ts";
 import { Router } from "./router/router.ts";
 

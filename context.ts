@@ -1,5 +1,5 @@
 const { readAll } = Deno;
-import { ServerRequest } from "https://deno.land/std@v0.39.0/http/server.ts";
+import { ServerRequest } from "https://deno.land/std@v0.50.0/http/server.ts";
 
 export interface ContexInterface {
   hostname: object;
