@@ -1,7 +1,8 @@
 type Handler = (ctx: any) => unknown;
-export type Path = string | RegExp;
-export type Route = {
+type Path = string | RegExp;
+type Route = {
 	method: string;
 	path: Path;
 	handler: Handler;
 };
+export { Handler, Path, Route };

@@ -1,6 +1,4 @@
-import { Route, Path } from './route.ts';
-type Handler = (ctx: any) => unknown;
-
+import { Route, Path, Handler } from './route.ts';
 export class Router {
 	protected routes: Route[] = [];
 
