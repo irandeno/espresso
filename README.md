@@ -1,6 +1,6 @@
 ![](https://i.ibb.co/5LPRwBJ/espresso.png)
 
-deno minimal web freamework
+deno minimal web framework
 
 # Getting Start
 ```javascript
@@ -18,7 +18,7 @@ app.start();
 *This project is under heavy construction and is becoming a great thing...*
 
 **We are very pleased with your cooperation**
-**, If you are interested in working on Espresso project, here are some parts we need to implement and work on**
+**, If you are interested in working on Espresso project, here are some parts we need to implement and work**
 
 
 
