@@ -34,9 +34,12 @@ export class Application {
   private async listen() {
     for await (const request of this.server) {
       const route = this.router.routes.find(
-        (route : any) => route.path == request.url && route.method == request.method
+        (route: any) => {
+          if (route.path instanceof RegExp) return route.path.test(request.url) && route.method == request.method;
+          return route.path == request.url && route.method == request.method;
+        }
       );
-      if (route != undefined) {
+      if (route) {
         route.handler(new Context(request));
       }
     }

@@ -26,7 +26,7 @@ app.start();
 
 ### Web Framework :
 - [ ] implement dynamic routes
-- [ ] regex routes
+- [x] regex routes
 - [ ] namespaced routes
 - [ ] implement middlewares
 - [ ] default security
