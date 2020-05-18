@@ -3,21 +3,26 @@ import { Context } from "./context.ts";
 import { Router } from "./router/router.ts";
 
 type ServerConfig = {
-  port: number;
+  port?: number;
+  verbose?: boolean;
 };
 
 
 export class Application {
+  private verbose: boolean = true;
   private port: number = 3000;
   private server: any;
   private router: any;
+
   constructor(serverConfig?: ServerConfig) {
     this.port = serverConfig?.port || 80;
+    this.verbose = serverConfig?.verbose || true;
     this.router = new Router();
   }
 
   start(port: number = this.port) {
     this.server = serve({ port });
+    if(this.verbose) console.log(`Server Listening on Port ${port}`);
     this.listen();
   }
 
@@ -40,7 +45,11 @@ export class Application {
         }
       );
       if (route) {
+        let t0 = performance.now();
         route.handler(new Context(request));
+        let t1 = performance.now();
+
+        if(this.verbose) console.log(`${request.method}: ${request.conn.remoteAddr.hostname}${request.url} - ${(t1 - t0).toFixed(2)}ms`);
       }
     }
   }

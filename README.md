@@ -36,7 +36,7 @@ app.start();
 - [ ] support for template engines
 - [ ] export context type
 - [ ] error Handling
-- [ ] logging
+- [x] logging
 - [ ] validation
 
 ### community :
