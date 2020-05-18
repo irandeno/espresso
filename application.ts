@@ -9,7 +9,7 @@ type ServerConfig = {
 
 
 export class Application {
-  private verbose: boolean = true;
+  private verbose: boolean;
   private port: number = 3000;
   private server: any;
   private router: any;
