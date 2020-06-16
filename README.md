@@ -51,13 +51,13 @@ app.start();
 - [ ] use espresso itself in website
 
 ## Our Roadmap :
-- [ ] DATABASE integration
+- [ ] Database integration
 - [ ] Microservices
 - [ ] MVC Pattern
 - [ ] CLI Tool
-- [ ] WEB SOCKETS
-- [ ] GRAPHQL
-- [ ] CRYPTO
-- [ ] HELPERS
-- [ ] TESTS
+- [ ] Web Sockets
+- [ ] GraphQL
+- [ ] Crypto
+- [ ] Helpers
+- [ ] Tests
 
