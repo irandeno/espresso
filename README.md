@@ -2,7 +2,7 @@
 
 deno minimal web framework
 
-# Getting Start
+# Getting Started
 ```javascript
 import { Application } from "https://deno.land/x/espresso/mod.ts";
 const app = new Application({ port : 80});
