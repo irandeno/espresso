@@ -24,7 +24,7 @@ Deno.test('Get Route', async () => {
 
 Deno.test('Post Route', async () => {
 	app.post('/', (req: any) => {
-        assertEquals(req.method,'GET')
+        assertEquals(req.method,'POST')
 		return 'Hello, World!'
 	})
 	const content = await request()
