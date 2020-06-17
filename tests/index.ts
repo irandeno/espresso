@@ -6,7 +6,7 @@ const app = new Application({ port: 8080 })
 
 app.start()
 
-async function request(suffix: string = '') {
+async function request(suffix: string = '', method: "GET" | "POST" ) {
 	const r = await fetch(`http://localhost:${port}${suffix}`)
 
 	return await r.text()
