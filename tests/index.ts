@@ -1,5 +1,5 @@
 import { Application } from '../application.ts'
-import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
+import { assertEquals } from "https://deno.land/std@0.57.0/testing/asserts.ts";
 
 const port = 8080
 const app = new Application({ port: 8080 })
