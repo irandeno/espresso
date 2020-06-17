@@ -38,6 +38,7 @@ app.start();
 - [ ] error Handling
 - [x] logging
 - [ ] validation
+- [ ] Testing Modules for all supported Features
 
 ### community :
 - [ ] init docs
