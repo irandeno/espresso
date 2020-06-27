@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@v0.50.0/http/server.ts";
+import { serve } from "https://deno.land/std@v0.58.0/http/server.ts";
 import { Context } from "./context.ts";
 import { Router } from "./router/router.ts";
 import { Middleware } from "./middlewares/middleware.ts";
@@ -16,7 +16,7 @@ export class Application {
   private middlewares: Middleware[] = [];
   constructor(serverConfig?: ServerConfig) {
     this.port = serverConfig?.port || 80;
-    this.log = serverConfig?.log || true;
+    this.log = serverConfig?.log ? true : false;
     this.router = new Router();
   }
 
