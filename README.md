@@ -25,16 +25,16 @@ app.start();
 # TODO
 
 ### Web Framework :
-- [ ] implement dynamic routes
+- [x] implement dynamic routes
 - [x] regex routes
 - [ ] namespaced routes
-- [ ] implement middlewares
+- [x] implement middlewares
 - [ ] default security
 - [ ] serve local files
 - [ ] support proxies
 - [ ] handle multipart/form-data
 - [ ] support for template engines
-- [ ] export context type
+- [ ] export types
 - [ ] error Handling
 - [x] logging
 - [ ] validation
