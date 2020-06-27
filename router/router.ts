@@ -1,36 +1,33 @@
-import { Route, Path, Handler } from './route.ts';
+import { Route, Path } from "./route.ts";
+import { Middleware } from "../middlewares/middleware.ts";
 export class Router {
-	protected routes: Route[] = [];
+  protected routes: Route[] = [];
+  get(path: Path, ...middlewares: Middleware[]) {
+    this.add("GET", path, middlewares);
+    return this;
+  }
 
-	get(path: Path, handler: Handler) {
-		this.add('GET', path, handler);
-		return this;
-	}
+  post(path: Path, ...middlewares: Middleware[]) {
+    this.add("POST", path, middlewares);
+    return this;
+  }
 
-	post(path: Path, handler: Handler) {
-		this.add('POST', path, handler);
-		return this;
-	}
+  put(path: Path, ...middlewares: Middleware[]) {
+    this.add("PUT", path, middlewares);
+    return this;
+  }
 
-	put(path: Path, handler: Handler) {
-		this.add('PUT', path, handler);
-		return this;
-	}
+  delete(path: Path, ...middlewares: Middleware[]) {
+    this.add("DELETE", path, middlewares);
+    return this;
+  }
 
-	delete(path: Path, handler: Handler) {
-		this.add('DELETE', path, handler);
-		return this;
-	}
+  patch(path: Path, ...middlewares: Middleware[]) {
+    this.add("PATCH", path, middlewares);
+    return this;
+  }
 
-	patch(path: Path, handler: Handler) {
-		this.add('PATCH', path, handler);
-		return this;
-	}
-
-	private add(method: string, path: Path, handler: Handler) {
-		this.routes = [
-			...this.routes,
-			{ method, path, handler }
-		];
-	}
+  private add(method: string, path: Path, middlewares: Middleware[]) {
+    this.routes = [...this.routes, { method, path, middlewares }];
+  }
 }
