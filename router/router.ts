@@ -47,7 +47,6 @@ export class Router {
         );
       }
     }
-    console.log(new RegExp(newPath));
     return new RegExp(newPath);
   }
 

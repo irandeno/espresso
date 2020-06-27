@@ -40,6 +40,16 @@ export class Application {
     return this;
   }
 
+  put(...params: any) {
+    this.router.put(...params);
+    return this;
+  }
+
+  delete(...params: any) {
+    this.router.delete(...params);
+    return this;
+  }
+
   private async listen() {
     for await (const request of this.server) {
       for (const middleware of this.middlewares) {
