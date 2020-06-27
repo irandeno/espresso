@@ -1,9 +1,7 @@
 import { Middleware } from "../middlewares/middleware.ts";
-type Handler = (ctx: any) => unknown;
-type Path = string | RegExp;
-type Route = {
+export type Path = string | RegExp;
+export type Route = {
   method: string;
-  path: Path;
+  path: RegExp;
   middlewares: Middleware[];
 };
-export { Handler, Path, Route };

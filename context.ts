@@ -9,6 +9,7 @@ export interface ContexInterface {
   send(body: string): void;
   json(body: object | string): void;
   [key: string]: any;
+  params?: Record<string, unknown>;
 }
 
 const decoder = new TextDecoder();
@@ -18,6 +19,7 @@ export class Context implements ContexInterface {
   readonly method: string;
   readonly url: string;
   readonly body: object | string;
+  params?: Record<string, unknown>  = {};
 
   constructor(request: ServerRequest) {
     this.hostname = request.conn.remoteAddr;
