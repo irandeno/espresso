@@ -45,7 +45,7 @@ export class Application {
       for (const middleware of this.middlewares) {
         await middleware(new Context(request));
       }
-      this.router.handleRequest(request,this.log);
+      this.router.handleRequest(request, this.log);
     }
   }
 }

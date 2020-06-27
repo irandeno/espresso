@@ -19,7 +19,7 @@ export class Context implements ContexInterface {
   readonly method: string;
   readonly url: string;
   readonly body: object | string;
-  params?: Record<string, unknown>  = {};
+  params?: Record<string, unknown> = {};
 
   constructor(request: ServerRequest) {
     this.hostname = request.conn.remoteAddr;

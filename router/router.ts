@@ -43,7 +43,7 @@ export class Router {
       if (match && match.groups) {
         newPath = newPath.replace(
           match[0],
-          this.regexGenerator(match.groups.identifier, match.groups.type)
+          this.regexGenerator(match.groups.identifier, match.groups.type),
         );
       }
     }
@@ -57,6 +57,10 @@ export class Router {
         return `(?<${identifier}>\\d+)`;
       case "string":
         return `(?<${identifier}>\\w+)`;
+      case "boolean":
+        return `(?<${identifier}>[01]{1}|true|false)`;
+      case "char":
+        return `(?<${identifier}>^[\w\d]{1}$)`;
       case "any":
         return `(?<${identifier}>.+)`;
     }
@@ -76,9 +80,9 @@ export class Router {
         let t1 = performance.now();
         if (log) {
           console.log(
-            `${request.method}: ${request.conn.remoteAddr.hostname}${
-              request.url
-            } - ${(t1 - t0).toFixed(2)}ms`
+            `${request.method}: ${request.conn.remoteAddr.hostname}${request.url} - ${
+              (t1 - t0).toFixed(2)
+            }ms`,
           );
         }
       }
