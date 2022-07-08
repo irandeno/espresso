@@ -1,5 +1,7 @@
+import { resolve } from "https://deno.land/std@0.147.0/path/mod.ts";
 import { ConnInfo } from "https://deno.land/std@v0.147.0/http/server.ts";
 import { lookup } from "https://deno.land/x/media_types@v2.3.7/mod.ts";
+import { Application } from "./application.ts";
 
 export interface ContextInterface {
   _request: Request;
@@ -14,6 +16,7 @@ export interface ContextInterface {
 }
 
 export class Context implements ContextInterface {
+  private app: Application;
   readonly _request: Request;
   readonly address: Deno.Addr;
   readonly method: string;
@@ -24,7 +27,8 @@ export class Context implements ContextInterface {
   _status = 200;
   _statusText = "";
 
-  constructor(request: Request, info: ConnInfo) {
+  constructor(app: Application, request: Request, info: ConnInfo) {
+    this.app = app;
     this.address = info.remoteAddr;
     this.method = request.method;
     this.url = new URL(request.url);
@@ -56,5 +60,13 @@ export class Context implements ContextInterface {
     this._status = status;
     this._statusText = statusText;
     return this;
+  }
+  async render(page: string, options: Record<string, unknown>) {
+    const templateEngine =
+      this.app.engines[this.app.config["view engine"] as string];
+    const viewDir = this.app.config.views as string;
+    const compiled = await templateEngine(resolve(viewDir, page), options);
+    this.body = compiled;
+    this.headers.set("Content-Type", "text/html");
   }
 }

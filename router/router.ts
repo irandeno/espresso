@@ -72,7 +72,7 @@ export class Router {
   ) {
     for (const route of this.routes) {
       const match = route.match(context.url.pathname);
-      if (match) {
+      if (match && route.method === context.method) {
         const t0 = performance.now();
         context.params = match.params as Record<string, unknown>;
         for await (const middleware of route.middlewares) {

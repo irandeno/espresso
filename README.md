@@ -29,10 +29,10 @@ working on Espresso project, here are some parts we need to implement and work**
 - [ ] namespaced routes
 - [x] implement middlewares
 - [ ] default security
-- [ ] serve local files
+- [x] serve local files
 - [ ] support proxies
 - [ ] handle multipart/form-data
-- [ ] support for template engines
+- [x] support for template engines
 - [x] export types
 - [ ] error Handling
 - [x] logging

@@ -9,16 +9,30 @@ type ServerConfig = {
   log?: boolean;
 };
 
+type ServerSetConfig = "views" | "view engine";
+
+export type TemplateEngine = (
+  filePath: string,
+  options: Record<string, unknown>,
+) => Promise<string>;
+
 export class Application {
   private log: boolean;
   private port = 3000;
   private router: Router;
   private middlewares: Middleware[];
+  config: Record<ServerSetConfig, unknown>;
+  engines: Record<string, TemplateEngine>;
   constructor(serverConfig?: ServerConfig) {
     this.port = serverConfig?.port || 80;
     this.log = serverConfig?.log ? true : false;
     this.router = new Router();
     this.middlewares = [];
+    this.config = {
+      "view engine": undefined,
+      views: undefined,
+    };
+    this.engines = {};
   }
 
   async start(port: number = this.port) {
@@ -31,6 +45,10 @@ export class Application {
         }
       },
     });
+  }
+
+  set(property: ServerSetConfig, value: unknown) {
+    this.config[property] = value;
   }
 
   use(...middlewares: Middleware[]) {
@@ -62,8 +80,12 @@ export class Application {
     return this;
   }
 
+  engine(id: string, engine: TemplateEngine) {
+    this.engines[id] = engine;
+  }
+
   private listen(request: Request, info: ConnInfo) {
-    const context = new Context(request, info);
+    const context = new Context(this, request, info);
     this.middlewares.forEach((middleware) => middleware(context));
     return this.router.handleRequest(context, this.log);
   }
