@@ -1,6 +1,8 @@
-import { Route, Path } from "./route.ts";
-import { Middleware } from "../middlewares/middleware.ts";
+import { resolve } from "https://deno.land/std@0.147.0/path/mod.ts";
+import { match } from "https://deno.land/x/path_to_regexp@v6.2.1/index.ts";
 import { Context } from "../context.ts";
+import { Middleware } from "../middlewares/middleware.ts";
+import { Path, Route } from "./route.ts";
 
 export class Router {
   protected routes: Route[] = [];
@@ -29,62 +31,68 @@ export class Router {
     return this;
   }
 
-  private add(method: string, path: Path, middlewares: Middleware[]) {
-    const dynamicRoute: RegExp = this.handleDynamicRoutes(path);
-    this.routes = [...this.routes, { method, path: dynamicRoute, middlewares }];
-  }
-
-  private handleDynamicRoutes(path: Path): RegExp {
-    if (path instanceof RegExp) return path;
-    let newPath = path;
-    const re = /(?<dynamic>\{(?<identifier>[\w\d]+):(?<type>\w+)\})/g;
-    let match;
-    while ((match = re.exec(path))) {
-      if (match && match.groups) {
-        newPath = newPath.replace(
-          match[0],
-          this.regexGenerator(match.groups.identifier, match.groups.type),
-        );
+  static(path: Path, dir: string) {
+    this.add("GET", path + "/:filepath+", [async (c) => {
+      const filename = (c.params.filepath as string[]).join("/");
+      const filePath = resolve(dir + filename);
+      const exists = async (fp: string) => {
+        try {
+          await Deno.stat(fp);
+          return true;
+        } catch (error) {
+          if (error instanceof Deno.errors.NotFound) {
+            return false;
+          } else {
+            throw error;
+          }
+        }
+      };
+      if (await exists(filePath)) {
+        await c.file(filePath);
+      } else {
+        c.status(404, "File not found");
       }
-    }
-    return new RegExp(newPath);
+    }]);
+    return this;
   }
 
-  private regexGenerator(identifier: string, type: string): string {
-    switch (type) {
-      case "number":
-        return `(?<${identifier}>\\d+)`;
-      case "string":
-        return `(?<${identifier}>\\w+)`;
-      case "boolean":
-        return `(?<${identifier}>[01]{1}|true|false)`;
-      case "char":
-        return `(?<${identifier}>^[\w\d]{1}$)`;
-      case "any":
-        return `(?<${identifier}>.+)`;
-    }
-    throw new Error("dynamic route invalid parameter type.");
+  private add(method: string, path: Path, middlewares: Middleware[]) {
+    this.routes = [...this.routes, {
+      method,
+      match: match(path, {
+        decode: decodeURIComponent,
+      }),
+      middlewares,
+    }];
   }
 
-  handleRequest(request: any, log: boolean) {
-    this.routes.forEach(async (route: Route) => {
-      let match = route.path.exec(request.url);
-      if (match) {
-        let t0 = performance.now();
-        for (const middleware of route.middlewares) {
-          const context = new Context(request);
-          context.params = match.groups;
+  async handleRequest(
+    context: Context,
+    log: boolean,
+  ) {
+    for (const route of this.routes) {
+      const match = route.match(context.url.pathname);
+      if (match && route.method === context.method) {
+        const t0 = performance.now();
+        context.params = match.params as Record<string, unknown>;
+        for await (const middleware of route.middlewares) {
           await middleware(context);
         }
-        let t1 = performance.now();
+        const t1 = performance.now();
         if (log) {
           console.log(
-            `${request.method}: ${request.conn.remoteAddr.hostname}${request.url} - ${
-              (t1 - t0).toFixed(2)
-            }ms`,
+            `${context.method}: ${context.url} - ${(t1 - t0).toFixed(2)}ms`,
           );
         }
+        return new Response(context.body, {
+          headers: context.headers,
+          status: context._status,
+          statusText: context._statusText,
+        });
       }
+    }
+    return new Response("404", {
+      status: 404,
     });
   }
 }
