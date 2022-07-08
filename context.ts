@@ -1,46 +1,60 @@
-const { readAll } = Deno;
-import { ServerRequest } from "https://deno.land/std@v0.50.0/http/server.ts";
+import { ConnInfo } from "https://deno.land/std@v0.147.0/http/server.ts";
+import { lookup } from "https://deno.land/x/media_types@v2.3.7/mod.ts";
 
-export interface ContexInterface {
-  hostname: object;
+export interface ContextInterface {
+  _request: Request;
+  address: Deno.Addr;
   method: string;
-  url: string;
-  body: object | string;
-  send(body: string): void;
-  json(body: object | string): void;
-  [key: string]: any;
+  url: URL;
+  body?: BodyInit;
   params?: Record<string, unknown>;
+  headers: Headers;
+  _status: number;
+  _statusText: string;
 }
 
-const decoder = new TextDecoder();
-export class Context implements ContexInterface {
-  readonly #_request: ServerRequest | any;
-  readonly hostname: object;
+export class Context implements ContextInterface {
+  readonly _request: Request;
+  readonly address: Deno.Addr;
   readonly method: string;
-  readonly url: string;
-  readonly body: object | string;
-  params?: Record<string, unknown> = {};
+  readonly url: URL;
+  body?: BodyInit;
+  params: Record<string, unknown> = {};
+  headers: Headers;
+  _status = 200;
+  _statusText = "";
 
-  constructor(request: ServerRequest) {
-    this.hostname = request.conn.remoteAddr;
+  constructor(request: Request, info: ConnInfo) {
+    this.address = info.remoteAddr;
     this.method = request.method;
-    this.url = request.url;
-    this.#_request = request;
-    this.body = request.body;
-  }
-  async getBody() {
-    return decoder.decode(await readAll(this.#_request.body));
+    this.url = new URL(request.url);
+    this.headers = new Headers();
+    this._request = request;
   }
   get request() {
-    return this.#_request;
+    return this._request;
   }
-  send(body: string) {
-    return this.#_request.respond({ body });
+  send(data: string) {
+    this.body = data;
   }
-  json(body: string | object) {
-    if (typeof body == "string") {
-      return this.#_request.respond({ body });
-    }
-    return this.#_request.respond({ body: JSON.stringify(body) });
+  json(json: Record<string, unknown>) {
+    this.body = JSON.stringify(json);
+    this.headers.set("Content-Type", "application/json");
+  }
+  async file(path: string) {
+    const file = await Deno.open(path);
+    const fileStat = await Deno.stat(path);
+    this.body = file.readable;
+    this.headers.set(
+      "Content-Type",
+      lookup(path) ||
+        "application/octet-stream",
+    );
+    this.headers.set("Content-Length", fileStat.size + "");
+  }
+  status(status: number, statusText: string) {
+    this._status = status;
+    this._statusText = statusText;
+    return this;
   }
 }
